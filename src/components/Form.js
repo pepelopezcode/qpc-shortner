@@ -56,21 +56,35 @@ function Form() {
       }, [done]);
   
     return (
-      <div>
-        <h2>My Form</h2>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <input
-              type="string"
-              id="string"
-              value={initialInfo}
-              onChange={(e) => setInitialInfo(e.target.value)}
-              required
-            />
+        <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="bg-white p-8 rounded shadow-md w-96">
+          <h2 className="text-2xl font-semibold mb-4">My Form</h2>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <input
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+                type="text"
+                id="string"
+                value={initialInfo}
+                onChange={(e) => setInitialInfo(e.target.value)}
+                placeholder="Enter initial info..."
+                required
+              />
+            </div>
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+              type="submit"
+            >
+              Submit
+            </button>
+          </form>
+          <div className="mt-4">
+            <p
+              className="whitespace-pre-line"
+              dangerouslySetInnerHTML={{ __html: endProduct }}
+            ></p>
           </div>
-          <button type="submit">Submit</button>
-        </form>
-        <p dangerouslySetInnerHTML={{ __html: endProduct }}></p>
+        </div>
       </div>
     );
 }
