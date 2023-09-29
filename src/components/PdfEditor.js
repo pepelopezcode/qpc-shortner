@@ -1,65 +1,72 @@
 import React, { useEffect, useState } from 'react';
-import { PDFDocument } from 'pdf-lib';
-import fontkit from '@pdf-lib/fontkit';
-import {qpcChecklist} from './pdfs'
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
-const PdfEditor = () => {
-  const [pdfDataUri, setPdfDataUri] = useState(null);
+function PdfEditor() {
+  const [pdfUrl, setPdfUrl] = useState(null);
+  const [error, setError] = useState(null);
 
-  const fillPdfForm = async () => {
-    try {
-      // Fetch the PDF with form fields
-      const formUrl = 'https://pdf-lib.js.org/assets/dod_character.pdf';
-    //   const formBytes = await fetch(formUrl).then((res) => {res.arrayBuffer()});
-      const formBytes = qpcChecklist.arrayBuffer()
-      console.log(formBytes)
+  useEffect(() => {
+    async function modifyPdf() {
+      try {
+        const url = 'https://pepelopezcode.github.io/pdfs/qpc%20receiving%20checklist.pdf';
+        const existingPdfBytes = await fetch(url).then((res) => res.arrayBuffer());
 
-      // Fetch the Ubuntu font
-      const fontUrl = 'https://pdf-lib.js.org/assets/ubuntu/Ubuntu-R.ttf';
-      const fontBytes = await fetch(fontUrl).then((res) => res.arrayBuffer());
+        const pdfDoc = await PDFDocument.load(existingPdfBytes);
+        const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-      // Load the PDF with form fields
-      const pdfDoc = await PDFDocument.load(formBytes);
+        const pages = pdfDoc.getPages();
+        const firstPage = pages[0];
+        const { width, height } = firstPage.getSize();
+        firstPage.drawText('This text was added with JavaScript!', {
+          x: 150 ,
+          y: 615,
+          size: 15,
+          font: helveticaFont,
+          color: rgb(0, 0, 0),
+        });
 
-      // Embed the Ubuntu font
-      pdfDoc.registerFontkit(fontkit);
-      const ubuntuFont = await pdfDoc.embedFont(fontBytes);
+        const modifiedPdfBytes = await pdfDoc.save();
 
-      // Get two text fields from the form
-      const form = pdfDoc.getForm();
-      const nameField = form.getTextField('CharacterName 2');
-      const ageField = form.getTextField('Age');
+        // Create a Blob from the modified PDF bytes
+        const modifiedPdfBlob = new Blob([modifiedPdfBytes], { type: 'application/pdf' });
 
-      // Fill the text fields with some fancy Unicode characters
-      nameField.setText('Ӎӑȑїõ');
-      ageField.setText('24 ŷȇȁŗš');
+        // Create a data URL for the modified PDF
+        const modifiedPdfDataUrl = URL.createObjectURL(modifiedPdfBlob);
 
-      // Update the field appearances with the Ubuntu font
-      form.updateFieldAppearances(ubuntuFont);
+        setPdfUrl(modifiedPdfDataUrl);
+      } catch (err) {
+        setError(err.message || 'An error occurred while modifying the PDF.');
+      }
+    }
 
-      // Save the PDF with filled form fields as a Blob
-      const modifiedPdfBytes = await pdfDoc.save();
-      const blob = new Blob([modifiedPdfBytes], { type: 'application/pdf' });
-      const dataUri = URL.createObjectURL(blob);
-      setPdfDataUri(dataUri);
-    } catch (error) {
-      console.error('Error filling PDF form:', error);
+    modifyPdf();
+  }, []);
+
+  const handlePrint = () => {
+    if (pdfUrl) {
+      const printWindow = window.open(pdfUrl);
+      printWindow.onload = () => {
+        printWindow.print();
+      };
     }
   };
 
-  useEffect(() => {
-    fillPdfForm();
-  }, []);
-
   return (
     <div>
-      {pdfDataUri && (
-        <a href={pdfDataUri} download="filled.pdf">
-          Download Filled PDF
-        </a>
+      {error ? (
+        <p>Error: {error}</p>
+      ) : pdfUrl ? (
+        <div>
+          <button onClick={handlePrint}>Print Modified PDF</button>
+          <a href={pdfUrl} download="modified_pdf.pdf">
+            Download Modified PDF
+          </a>
+        </div>
+      ) : (
+        <p>Loading...</p>
       )}
     </div>
   );
-};
+}
 
 export default PdfEditor;
