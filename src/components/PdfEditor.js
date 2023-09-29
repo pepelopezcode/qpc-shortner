@@ -75,9 +75,7 @@ function PdfEditor() {
       ) : pdfUrl ? (
         <div>
           <button onClick={handlePrint}>Print Modified PDF</button>
-          <a href={pdfUrl} download="modified_pdf.pdf">
-            Download Modified PDF
-          </a>
+          
         </div>
       ) : (
         <p>Loading...</p>
