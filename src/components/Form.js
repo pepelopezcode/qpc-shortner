@@ -21,6 +21,8 @@ function Form() {
     setEndProduct,
     setCurrTime,
     setCurrDate,
+    setQty,
+    qty
   } = useContext(AppContext);
 
   const formatDateTime = () => {
@@ -78,9 +80,6 @@ function Form() {
   };
 
   useEffect(() => {
-    console.log(
-      `ARRIVED @ ${date} ${time}\n${companyName}\nPO:${purchaseOrder}\nWO:${workOrder}`
-    );
     setEndProduct(
       `ARRIVED @ ${date} ${time}<br>${companyName}<br>PO:${purchaseOrder}<br>WO:${workOrder}`
     );
@@ -93,12 +92,21 @@ function Form() {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <input
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+              className="w-3/4 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
               type="text"
               id="string"
               value={initialInfo}
               onChange={(e) => setInitialInfo(e.target.value)}
               placeholder="Enter initial info..."
+              required
+            />
+            <input
+              className="w-1/4 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+              type="text"
+              id="string"
+              value={qty}
+              onChange={(e) => setQty(e.target.value)}
+              placeholder="Enter quantity"
               required
             />
           </div>

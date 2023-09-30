@@ -6,7 +6,7 @@ import fontkit from '@pdf-lib/fontkit'
 
 
 function PdfEditor() {
-  const [pdfUrl, setPdfUrl] = useState(null);
+  const [checklistPdfUrl, setChecklistPdfUrl] = useState(null);
   const [error, setError] = useState(null);
   const { workOrder, companyName, purchaseOrder, date, time, done, currTime, currDate } =
     useContext(AppContext);
@@ -19,38 +19,47 @@ function PdfEditor() {
         const expediteBigLabel = "https://pepelopezcode.github.io/pdfs/EXPEDITE%20%20BIG%20LABEL.docx.pdf";
         const calibriFontUrl = "https://pepelopezcode.github.io/pdfs/calibrib.ttf"
 
-        const existingChecklistPdfBytes = await fetch(checklistUrl).then((res) =>
-          res.arrayBuffer()
-        );
+        const existingChecklistPdfBytes = await fetch(checklistUrl).then((res) => res.arrayBuffer());
+        const existingBigLabePdfBytes = await fetch(bigLabelUrl).then((res) => res.arrayBuffer());
+        const existingExpediteBigLabelPdfBytes = await fetch(expediteBigLabel).then((res) => res.arrayBuffer());
 
         const checklistPdfDoc = await PDFDocument.load(existingChecklistPdfBytes);
+        const bigLabelPdfDoc = await PDFDocument.load(existingBigLabePdfBytes);
+        const expediteBigLabelPdfDoc = await PDFDocument.load(existingExpediteBigLabelPdfBytes);
 
         checklistPdfDoc.registerFontkit(fontkit)
+        bigLabelPdfDoc.registerFontkit(fontkit)
+        expediteBigLabelPdfDoc.registerFontkit(fontkit)
+
         const fontResponse = await fetch(calibriFontUrl).then((res) => res.arrayBuffer())
-        const calibriFont = await checklistPdfDoc.embedFont(fontResponse)
+
+        const checklistCalibriFont = await checklistPdfDoc.embedFont(fontResponse)
+        const bigLabelCalibriFont = await checklistPdfDoc.embedFont(fontResponse)
+        const expediteBigLabelCalibriFont = await checklistPdfDoc.embedFont(fontResponse)
         
-        const inputText = (xAxis, yAxis, text) => {
-          firstPage.drawText(`${text}`, {
+        const inputText = (xAxis, yAxis, text, pdf, font) => {
+          pdf.drawText(`${text}`, {
             x: xAxis,
             y: yAxis,
             size: 15,
-            font: calibriFont,
+            font: font,
             color: rgb(0, 0, 0),
           });
         };
+          //stopped here gonna make everything for the big labels
         const checklistPages = checklistPdfDoc.getPages();
-        const firstPage = checklistPages[0];
-        // const { width, height } = firstPage.getSize();
-        inputText(98, 622, companyName);
-        inputText(450, 622, purchaseOrder);
-        inputText(150, 597, date);
-        inputText(387, 597, time);
-        inputText(170, 525, "GOOD");
-        inputText(370, 375, currDate);
-        inputText(490, 375, currTime);
-        inputText(174, 323, workOrder);
-        inputText(370, 115, currDate);
-        inputText(490, 115, currTime);
+        const checklistFirstPage = checklistPages[0];
+        
+        inputText(98, 622, companyName, checklistFirstPage, checklistCalibriFont);
+        inputText(450, 622, purchaseOrder, checklistFirstPage, checklistCalibriFont);
+        inputText(150, 597, date, checklistFirstPage, checklistCalibriFont);
+        inputText(387, 597, time, checklistFirstPage, checklistCalibriFont);
+        inputText(170, 525, "GOOD", checklistFirstPage, checklistCalibriFont);
+        inputText(370, 375, currDate, checklistFirstPage, checklistCalibriFont);
+        inputText(490, 375, currTime, checklistFirstPage, checklistCalibriFont);
+        inputText(174, 323, workOrder, checklistFirstPage, checklistCalibriFont);
+        inputText(370, 115, currDate, checklistFirstPage, checklistCalibriFont);
+        inputText(490, 115, currTime, checklistFirstPage, checklistCalibriFont);
 
         const modifiedChecklistPdfBytes = await checklistPdfDoc.save();
 
@@ -58,9 +67,9 @@ function PdfEditor() {
           type: "application/pdf",
         });
 
-        const modifiedPdfDataUrl = URL.createObjectURL(modifiedChecklistPdfBlob);
+        const modifiedChecklistPdfDataUrl = URL.createObjectURL(modifiedChecklistPdfBlob);
 
-        setPdfUrl(modifiedPdfDataUrl);
+        setChecklistPdfUrl(modifiedChecklistPdfDataUrl);
       } catch (err) {
         setError(err.message || "An error occurred while modifying the PDF.");
       }
@@ -70,8 +79,8 @@ function PdfEditor() {
   }, [done]);
 
   const handlePrint = () => {
-    if (pdfUrl) {
-      const printWindow = window.open(pdfUrl);
+    if (checklistPdfUrl) {
+      const printWindow = window.open(checklistPdfUrl);
       printWindow.onload = () => {
         printWindow.print();
       };
@@ -82,7 +91,7 @@ function PdfEditor() {
     <div>
       {error ? (
         <p>Error: {error}</p>
-      ) : pdfUrl ? (
+      ) : checklistPdfUrl ? (
         <div>
           <button onClick={handlePrint}>Print Modified PDF</button>
           
