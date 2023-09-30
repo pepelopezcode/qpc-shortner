@@ -1,6 +1,9 @@
 import React, { useEffect, useState, useContext } from "react";
-import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import { PDFDocument, rgb } from "pdf-lib";
 import { AppContext } from "./App";
+import fontkit from '@pdf-lib/fontkit'
+
+
 
 function PdfEditor() {
   const [pdfUrl, setPdfUrl] = useState(null);
@@ -11,44 +14,51 @@ function PdfEditor() {
   useEffect(() => {
     async function modifyPdf() {
       try {
-        const url =
-          "https://pepelopezcode.github.io/pdfs/qpc%20receiving%20checklist.pdf";
-        const existingPdfBytes = await fetch(url).then((res) =>
+        const checklistUrl = "https://pepelopezcode.github.io/pdfs/qpc%20receiving%20checklist.pdf";
+        const bigLabelUrl = "https://pepelopezcode.github.io/pdfs/BIG%20LABEL.docx.pdf";
+        const expediteBigLabel = "https://pepelopezcode.github.io/pdfs/EXPEDITE%20%20BIG%20LABEL.docx.pdf";
+        const calibriFontUrl = "https://pepelopezcode.github.io/pdfs/calibrib.ttf"
+
+        const existingChecklistPdfBytes = await fetch(checklistUrl).then((res) =>
           res.arrayBuffer()
         );
 
-        const pdfDoc = await PDFDocument.load(existingPdfBytes);
-        const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+        const checklistPdfDoc = await PDFDocument.load(existingChecklistPdfBytes);
+
+        checklistPdfDoc.registerFontkit(fontkit)
+        const fontResponse = await fetch(calibriFontUrl).then((res) => res.arrayBuffer())
+        const calibriFont = await checklistPdfDoc.embedFont(fontResponse)
+        
         const inputText = (xAxis, yAxis, text) => {
           firstPage.drawText(`${text}`, {
             x: xAxis,
             y: yAxis,
             size: 15,
-            font: helveticaFont,
+            font: calibriFont,
             color: rgb(0, 0, 0),
           });
         };
-        const pages = pdfDoc.getPages();
-        const firstPage = pages[0];
+        const checklistPages = checklistPdfDoc.getPages();
+        const firstPage = checklistPages[0];
         // const { width, height } = firstPage.getSize();
-        inputText(87, 638, companyName);
-        inputText(430, 642, purchaseOrder);
-        inputText(150, 615, date);
-        inputText(375, 618, time);
-        inputText(160, 540, "GOOD");
-        inputText(350, 385, currDate);
-        inputText(460, 385, currTime);
-        inputText(168, 330, workOrder);
-        inputText(345, 112, currDate);
-        inputText(460, 112, currTime);
+        inputText(98, 622, companyName);
+        inputText(450, 622, purchaseOrder);
+        inputText(150, 597, date);
+        inputText(387, 597, time);
+        inputText(170, 525, "GOOD");
+        inputText(370, 375, currDate);
+        inputText(490, 375, currTime);
+        inputText(174, 323, workOrder);
+        inputText(370, 115, currDate);
+        inputText(490, 115, currTime);
 
-        const modifiedPdfBytes = await pdfDoc.save();
+        const modifiedChecklistPdfBytes = await checklistPdfDoc.save();
 
-        const modifiedPdfBlob = new Blob([modifiedPdfBytes], {
+        const modifiedChecklistPdfBlob = new Blob([modifiedChecklistPdfBytes], {
           type: "application/pdf",
         });
 
-        const modifiedPdfDataUrl = URL.createObjectURL(modifiedPdfBlob);
+        const modifiedPdfDataUrl = URL.createObjectURL(modifiedChecklistPdfBlob);
 
         setPdfUrl(modifiedPdfDataUrl);
       } catch (err) {
