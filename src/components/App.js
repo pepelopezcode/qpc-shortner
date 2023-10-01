@@ -15,8 +15,19 @@ function App() {
   const [endProduct, setEndProduct] = useState("");
   const [currTime, setCurrTime] = useState("");
   const [currDate, setCurrDate] = useState("");
-  const [qty, setQty] = useState('')
-  const [isExpedite, setIsExpedite] = useState(false)
+  const [qty, setQty] = useState('');
+  const [isExpedite, setIsExpedite] = useState(false);
+  const [combinedPdfUrl, setCombinedPdfUrl] = useState(null);
+
+
+  const handlePrint = () => {
+    if (combinedPdfUrl) {
+      const printWindow = window.open(combinedPdfUrl);
+      printWindow.onload = () => {
+        printWindow.print();
+      };
+    }
+  };
 
   return (
     <div className="App">
@@ -45,7 +56,9 @@ function App() {
           qty,
           setQty,
           setIsExpedite,
-          isExpedite
+          isExpedite,
+          handlePrint,
+          setCombinedPdfUrl
         }}
       >
         <Form />

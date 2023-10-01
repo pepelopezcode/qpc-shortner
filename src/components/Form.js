@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext,  } from "react";
 import { AppContext } from "./App";
 
 function Form() {
@@ -24,8 +24,10 @@ function Form() {
     setQty,
     qty,
     setIsExpedite,
-    isExpedite
+    isExpedite,
+    handlePrint
   } = useContext(AppContext);
+ 
 
   const formatDateTime = () => {
     const dateTime = new Date();
@@ -79,8 +81,10 @@ function Form() {
     }
     formatDateTime()
     setDone(!done);
+    
+
   };
-  console.log(isExpedite)
+  
 
   useEffect(() => {
     setEndProduct(
@@ -90,60 +94,75 @@ function Form() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="bg-white p-8 rounded shadow-md w-96">
-        <h2 className="text-2xl font-semibold mb-4">My Form</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <input
-              className="w-3/4 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-              type="text"
-              id="string"
-              value={initialInfo}
-              onChange={(e) => setInitialInfo(e.target.value)}
-              placeholder="Enter initial info..."
-              required
-            />
-            <input
-              className="w-1/4 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-              type="text"
-              id="string"
-              value={qty}
-              onChange={(e) => setQty(e.target.value)}
-              placeholder="Enter quantity"
-              required
-            />
-          </div>
-          <div>
-            <label>
-              <input
-              className="w-1/4 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-              type="checkbox"
-              id="expedite"
-              value='Expedite'
-              name="Expedite"
-              onChange={ () => {setIsExpedite(!isExpedite)}}
-              placeholder="Expedite"
-            />
-            Expedite
-            </label>
-          
-            
-          </div>
-          <button
-            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-            type="submit"
-          >
-            Submit
-          </button>
-        </form>
-        <div className="mt-4">
-          <p
-            className="whitespace-pre-line"
-            dangerouslySetInnerHTML={{ __html: endProduct }}
-          ></p>
-        </div>
+  <div className="bg-white p-8 rounded shadow-md w-96">
+    <h2 className="text-2xl font-semibold mb-4">My Form</h2>
+    <form onSubmit={handleSubmit}>
+      <div className="mb-4">
+        <input
+          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+          type="text"
+          id="string"
+          value={initialInfo}
+          onChange={(e) => setInitialInfo(e.target.value)}
+          placeholder="Enter initial info..."
+          required
+        />
       </div>
+      <div className="mb-4">
+        <input
+          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+          type="text"
+          id="string"
+          value={qty}
+          onChange={(e) => setQty(e.target.value)}
+          placeholder="Enter quantity"
+          required
+        />
+      </div>
+      <div className="mb-4">
+        <label className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            id="expedite"
+            value="Expedite"
+            name="Expedite"
+            onChange={() => {
+              setIsExpedite(!isExpedite);
+            }}
+            className="form-checkbox border rounded text-blue-500 focus:outline-none focus:border-blue-500"
+          />
+          <span className="text-gray-700">Expedite</span>
+        </label>
+      </div>
+      <div className="mb-4">
+        <button
+          className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
+          type="submit"
+        >
+          Submit
+        </button>
+      </div>
+    </form>
+    <button
+      className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
+      type="button"
+      onClick={() => {
+        if (done && endProduct) {
+          handlePrint();
+        }
+      }}
+      disabled={!done || !endProduct}
+    >
+      Print
+    </button>
+    <div className="mt-4">
+      <p
+        className="whitespace-pre-line"
+        dangerouslySetInnerHTML={{ __html: endProduct }}
+      ></p>
     </div>
+  </div>
+</div>
   );
 }
 
