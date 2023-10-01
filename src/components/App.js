@@ -16,6 +16,7 @@ function App() {
   const [currTime, setCurrTime] = useState("");
   const [currDate, setCurrDate] = useState("");
   const [qty, setQty] = useState('')
+  const [isExpedite, setIsExpedite] = useState(false)
 
   return (
     <div className="App">
@@ -42,7 +43,9 @@ function App() {
           currDate,
           currTime,
           qty,
-          setQty
+          setQty,
+          setIsExpedite,
+          isExpedite
         }}
       >
         <Form />

@@ -22,7 +22,9 @@ function Form() {
     setCurrTime,
     setCurrDate,
     setQty,
-    qty
+    qty,
+    setIsExpedite,
+    isExpedite
   } = useContext(AppContext);
 
   const formatDateTime = () => {
@@ -78,6 +80,7 @@ function Form() {
     formatDateTime()
     setDone(!done);
   };
+  console.log(isExpedite)
 
   useEffect(() => {
     setEndProduct(
@@ -109,6 +112,22 @@ function Form() {
               placeholder="Enter quantity"
               required
             />
+          </div>
+          <div>
+            <label>
+              <input
+              className="w-1/4 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+              type="checkbox"
+              id="expedite"
+              value='Expedite'
+              name="Expedite"
+              onChange={ () => {setIsExpedite(!isExpedite)}}
+              placeholder="Expedite"
+            />
+            Expedite
+            </label>
+          
+            
           </div>
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"

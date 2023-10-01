@@ -11,6 +11,13 @@ function PdfEditor() {
   const { workOrder, companyName, purchaseOrder, date, time, done, currTime, currDate } =
     useContext(AppContext);
 
+    async function copyFirstPageToSecondPage(labelPdf, checklistPdfDoc) {
+
+      const [firstPage] = await labelPdf.copyPages(labelPdf, [0]);
+    
+      checklistPdfDoc.insertPage(1, firstPage);
+    }
+
   useEffect(() => {
     async function modifyPdf() {
       try {
@@ -26,6 +33,7 @@ function PdfEditor() {
         const checklistPdfDoc = await PDFDocument.load(existingChecklistPdfBytes);
         const bigLabelPdfDoc = await PDFDocument.load(existingBigLabePdfBytes);
         const expediteBigLabelPdfDoc = await PDFDocument.load(existingExpediteBigLabelPdfBytes);
+
 
         checklistPdfDoc.registerFontkit(fontkit)
         bigLabelPdfDoc.registerFontkit(fontkit)
@@ -62,6 +70,7 @@ function PdfEditor() {
         inputText(490, 115, currTime, checklistFirstPage, checklistCalibriFont);
 
         const modifiedChecklistPdfBytes = await checklistPdfDoc.save();
+
 
         const modifiedChecklistPdfBlob = new Blob([modifiedChecklistPdfBytes], {
           type: "application/pdf",
