@@ -1,4 +1,4 @@
-import React, { useEffect, useContext,  } from "react";
+import React, { useEffect, useContext } from "react";
 import { AppContext } from "./App";
 
 function Form() {
@@ -25,14 +25,19 @@ function Form() {
     qty,
     setIsExpedite,
     isExpedite,
-    handlePrint
+    handlePrint,
+    setPackageType,
+    packageType,
+    numberOfPackages,
+    setNumberOfPackages
   } = useContext(AppContext);
- 
 
   const formatDateTime = () => {
     const dateTime = new Date();
 
-    const formattedDate = `${dateTime.getMonth() + 1}/${dateTime.getDate()}/${dateTime.getFullYear()}`;
+    const formattedDate = `${
+      dateTime.getMonth() + 1
+    }/${dateTime.getDate()}/${dateTime.getFullYear()}`;
 
     const hours = dateTime.getHours();
     const minutes = dateTime.getMinutes();
@@ -44,8 +49,8 @@ function Form() {
       minutes +
       " " +
       amOrPm;
-      setCurrDate(formattedDate);
-      setCurrTime(formattedTime);
+    setCurrDate(formattedDate);
+    setCurrTime(formattedTime);
   };
 
   const handleSubmit = (e) => {
@@ -79,12 +84,9 @@ function Form() {
         tempWord = "";
       }
     }
-    formatDateTime()
+    formatDateTime();
     setDone(!done);
-    
-
   };
-  
 
   useEffect(() => {
     setEndProduct(
@@ -93,72 +95,92 @@ function Form() {
   }, [done]);
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-  <div className="bg-white p-8 rounded shadow-md w-96">
-    <h2 className="text-2xl font-semibold mb-4">My Form</h2>
-    <form onSubmit={handleSubmit}>
-      <div className="mb-4">
-        <input
-          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-          type="text"
-          id="string"
-          value={initialInfo}
-          onChange={(e) => setInitialInfo(e.target.value)}
-          placeholder="Enter initial info..."
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <input
-          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-          type="text"
-          id="string"
-          value={qty}
-          onChange={(e) => setQty(e.target.value)}
-          placeholder="Enter quantity"
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            id="expedite"
-            value="Expedite"
-            name="Expedite"
-            onChange={() => {
-              setIsExpedite(!isExpedite);
-            }}
-            className="form-checkbox border rounded text-blue-500 focus:outline-none focus:border-blue-500"
-          />
-          <span className="text-gray-700">Expedite</span>
-        </label>
-      </div>
-      <div className="mb-4">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center ">
+      <div className="bg-white p-8 rounded shadow-md w-96">
+        <h2 className="text-2xl font-semibold mb-4 caret-transparent">My Form</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <input
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+              type="text"
+              id="string"
+              value={initialInfo}
+              onChange={(e) => setInitialInfo(e.target.value)}
+              placeholder="Enter initial info..."
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <input
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+              type="text"
+              id="string"
+              value={qty}
+              onChange={(e) => setQty(e.target.value)}
+              placeholder="Enter quantity on PO"
+              required
+            />
+          </div>
+          <div className="mb-4 caret-transparent ">
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="expedite"
+                value="Expedite"
+                name="Expedite"
+                onChange={() => {
+                  setIsExpedite(!isExpedite);
+                }}
+                className="form-checkbox border rounded text-blue-500 focus:outline-none focus:border-blue-500"
+              />
+              <span className="text-gray-700">Expedite</span>
+            </label>
+            <label htmlFor="selectOption">Package Type</label>
+            <select name="package" id="selectOption" value={packageType}  onChange={(e) => setPackageType(e.target.value)} className=" border " >
+              <option value="Box">Box</option>
+              <option value="Pallet">Pallet</option>
+              <option value="Crate">Crate</option>
+              <option value="Loose">Loose</option>
+              
+            </select>
+          </div>
+          <div className="mb-4">
+            <input
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+              type="text"
+              id="string"
+              value={numberOfPackages}
+              onChange={(e) => setNumberOfPackages(e.target.value)}
+              placeholder="Enter number of packages"
+              required
+            />
+          </div>
+          <div className="mb-4 caret-transparent">
+            <button
+              className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
+              type="submit"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
         <button
-          className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
-          type="submit"
+          className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 caret-transparent"
+          type="button"
+          onClick={() => {
+            handlePrint();
+          }}
         >
-          Submit
+          Print
         </button>
+        <div className="mt-4">
+          <p
+            className="whitespace-pre-line caret-transparent"
+            dangerouslySetInnerHTML={{ __html: endProduct }}
+          ></p>
+        </div>
       </div>
-    </form>
-    <button
-      className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
-      type="button"
-      onClick={() => {handlePrint()}}
-      
-    >
-      Print
-    </button>
-    <div className="mt-4">
-      <p
-        className="whitespace-pre-line"
-        dangerouslySetInnerHTML={{ __html: endProduct }}
-      ></p>
     </div>
-  </div>
-</div>
   );
 }
 

@@ -8,7 +8,19 @@ import fontkit from '@pdf-lib/fontkit'
 function PdfEditor() {
 
   const [error, setError] = useState(null);
-  const { workOrder, companyName, purchaseOrder, date, time, done, currTime, currDate, isExpedite, qty, setCombinedPdfUrl, } =
+  const { 
+    workOrder, 
+    companyName, 
+    purchaseOrder, 
+    date, 
+    time, 
+    done, 
+    currTime, 
+    currDate, 
+    isExpedite, 
+    qty, 
+    setCombinedPdfUrl, 
+    packageType} =
     useContext(AppContext);
 
     async function copyFirstPageToSecondPage(labelPdf, checklistPdf) {      
@@ -75,6 +87,38 @@ function PdfEditor() {
         inputText(370, 115, currDate, checklistFirstPage, checklistCalibriFont, 15);
         inputText(490, 115, currTime, checklistFirstPage, checklistCalibriFont, 15);
 
+        const circlePackageType = (type) => {
+          let xAxis = 0
+          let yAxis = 0
+          if (type === 'Box'){
+            xAxis = 162;
+            yAxis = 555;
+          }else if (type === 'Pallet'){
+            xAxis = 200;
+            yAxis = 555;
+          }else if (type === 'Crate'){
+            xAxis = 240;
+            yAxis = 555;
+          }else {
+            xAxis = 278;
+            yAxis = 555;
+          }
+          checklistFirstPage.drawEllipse({
+            x: xAxis,
+            y: yAxis,
+            xScale: 16,
+            yScale: 11,
+            borderWidth: 2,
+            borderColor: rgb(0, 0, 0),
+            color: rgb(0, 0, 0),
+            opacity: 0,
+            borderOpacity: 1,
+          })
+        }
+
+        circlePackageType(packageType)
+
+        
         const modifiedChecklistPdfBytes = await checklistPdfDoc.save();
 
         

@@ -18,6 +18,8 @@ function App() {
   const [qty, setQty] = useState('');
   const [isExpedite, setIsExpedite] = useState(false);
   const [combinedPdfUrl, setCombinedPdfUrl] = useState(null);
+  const [packageType, setPackageType] = useState('Box')
+  const [numberOfPackages, setNumberOfPackages] = useState('')
 
 
   const handlePrint = () => {
@@ -58,7 +60,11 @@ function App() {
           setIsExpedite,
           isExpedite,
           handlePrint,
-          setCombinedPdfUrl
+          setCombinedPdfUrl,
+          packageType, 
+          setPackageType,
+          numberOfPackages, 
+          setNumberOfPackages
         }}
       >
         <Form />
