@@ -93,6 +93,7 @@ function Form() {
       `ARRIVED @ ${date} ${time}<br>${companyName}<br>PO:${purchaseOrder}<br>WO:${workOrder}`
     );
   }, [done]);
+  
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center ">

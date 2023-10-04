@@ -20,7 +20,8 @@ function PdfEditor() {
     isExpedite, 
     qty, 
     setCombinedPdfUrl, 
-    packageType} =
+    packageType,
+    numberOfPackages} =
     useContext(AppContext);
 
     async function copyFirstPageToSecondPage(labelPdf, checklistPdf) {      
@@ -86,6 +87,8 @@ function PdfEditor() {
         inputText(174, 323, workOrder, checklistFirstPage, checklistCalibriFont, 15);
         inputText(370, 115, currDate, checklistFirstPage, checklistCalibriFont, 15);
         inputText(490, 115, currTime, checklistFirstPage, checklistCalibriFont, 15);
+        inputText(425, 550, numberOfPackages, checklistFirstPage, checklistCalibriFont, 15)
+
 
         const circlePackageType = (type) => {
           let xAxis = 0
