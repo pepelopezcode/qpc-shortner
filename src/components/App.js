@@ -20,6 +20,7 @@ function App() {
   const [combinedPdfUrl, setCombinedPdfUrl] = useState(null);
   const [packageType, setPackageType] = useState('Box')
   const [numberOfPackages, setNumberOfPackages] = useState('')
+  const [shippingMethod, setShippingMethod] = useState('DRIVER')
 
 
   const handlePrint = () => {
@@ -64,7 +65,9 @@ function App() {
           packageType, 
           setPackageType,
           numberOfPackages, 
-          setNumberOfPackages
+          setNumberOfPackages,
+          shippingMethod, 
+          setShippingMethod
         }}
       >
         <Form />

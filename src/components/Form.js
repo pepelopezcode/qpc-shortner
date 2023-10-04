@@ -29,7 +29,9 @@ function Form() {
     setPackageType,
     packageType,
     numberOfPackages,
-    setNumberOfPackages
+    setNumberOfPackages,
+    shippingMethod, 
+    setShippingMethod
   } = useContext(AppContext);
 
   const formatDateTime = () => {
@@ -104,7 +106,7 @@ function Form() {
             <input
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
               type="text"
-              id="string"
+              id="initial-info"
               value={initialInfo}
               onChange={(e) => setInitialInfo(e.target.value)}
               placeholder="Enter initial info..."
@@ -115,7 +117,7 @@ function Form() {
             <input
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
               type="text"
-              id="string"
+              id="qty"
               value={qty}
               onChange={(e) => setQty(e.target.value)}
               placeholder="Enter quantity on PO"
@@ -136,8 +138,15 @@ function Form() {
               />
               <span className="text-gray-700">Expedite</span>
             </label>
-            <label htmlFor="selectOption">Package Type</label>
-            <select name="package" id="selectOption" value={packageType}  onChange={(e) => setPackageType(e.target.value)} className=" border " >
+            <label htmlFor="selectShipping">Shipping Method</label>
+            <select name="shippingMethod" id="selectShipping" value={shippingMethod}  onChange={(e) => setShippingMethod(e.target.value)} className=" border " >
+              <option value="DRIVER">DRIVER</option>
+              <option value="FEDEX">FEDEX</option>
+              <option value="UPS">UPS</option>
+              
+            </select>
+            <label htmlFor="selectPackageType">Package Type</label>
+            <select name="package" id="selectPackageType" value={packageType}  onChange={(e) => setPackageType(e.target.value)} className=" border " >
               <option value="Box">Box</option>
               <option value="Pallet">Pallet</option>
               <option value="Crate">Crate</option>
@@ -145,11 +154,11 @@ function Form() {
               
             </select>
           </div>
-          <div className="mb-4">
+          <div className="mb-4 caret-transparent">
             <input
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
               type="text"
-              id="string"
+              id="number-of-packages"
               value={numberOfPackages}
               onChange={(e) => setNumberOfPackages(e.target.value)}
               placeholder="Enter number of packages"
