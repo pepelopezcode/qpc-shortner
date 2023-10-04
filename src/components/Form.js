@@ -98,7 +98,7 @@ function Form() {
   
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center ">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
       <div className="bg-white p-8 rounded shadow-md w-96">
         <h2 className="text-2xl font-semibold mb-4 caret-transparent">My Form</h2>
         <form onSubmit={handleSubmit}>
@@ -113,7 +113,7 @@ function Form() {
               required
             />
           </div>
-          <div className="mb-4">
+          <div className="mb-4 caret-transparent">
             <input
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
               type="text"
@@ -124,37 +124,49 @@ function Form() {
               required
             />
           </div>
-          <div className="mb-4 caret-transparent ">
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="expedite"
-                value="Expedite"
-                name="Expedite"
-                onChange={() => {
-                  setIsExpedite(!isExpedite);
-                }}
-                className="form-checkbox border rounded text-blue-500 focus:outline-none focus:border-blue-500"
-              />
-              <span className="text-gray-700">Expedite</span>
-            </label>
+          <div className="mb-4 caret-transparent">
+            <input
+              type="checkbox"
+              id="expedite"
+              value="Expedite"
+              name="Expedite"
+              onChange={() => {
+                setIsExpedite(!isExpedite);
+              }}
+              className="form-checkbox custom-checkbox border rounded text-blue-500 focus:outline-none focus:border-blue-500"
+            />
+            <label htmlFor="expedite" className="ml-2 text-gray-700">Expedite</label>
+          </div>
+          <div className="mb-4 caret-transparent">
             <label htmlFor="selectShipping">Shipping Method</label>
-            <select name="shippingMethod" id="selectShipping" value={shippingMethod}  onChange={(e) => setShippingMethod(e.target.value)} className=" border " >
+            <select
+              name="shippingMethod"
+              id="selectShipping"
+              value={shippingMethod}
+              onChange={(e) => setShippingMethod(e.target.value)}
+              className="border rounded-md custom-select"
+            >
               <option value="DRIVER">DRIVER</option>
               <option value="FEDEX">FEDEX</option>
               <option value="UPS">UPS</option>
-              
             </select>
+          </div>
+          <div className="mb-4 caret-transparent">
             <label htmlFor="selectPackageType">Package Type</label>
-            <select name="package" id="selectPackageType" value={packageType}  onChange={(e) => setPackageType(e.target.value)} className=" border " >
+            <select
+              name="package"
+              id="selectPackageType"
+              value={packageType}
+              onChange={(e) => setPackageType(e.target.value)}
+              className="border rounded-md  custom-select"
+            >
               <option value="Box">Box</option>
               <option value="Pallet">Pallet</option>
               <option value="Crate">Crate</option>
               <option value="Loose">Loose</option>
-              
             </select>
           </div>
-          <div className="mb-4 caret-transparent">
+          <div className="mb-4  caret-transparent">
             <input
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
               type="text"
@@ -167,7 +179,7 @@ function Form() {
           </div>
           <div className="mb-4 caret-transparent">
             <button
-              className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
+              className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 caret-transparent"
               type="submit"
             >
               Submit
@@ -183,7 +195,7 @@ function Form() {
         >
           Print
         </button>
-        <div className="mt-4">
+        <div className="mt-4 select-all">
           <p
             className="whitespace-pre-line caret-transparent"
             dangerouslySetInnerHTML={{ __html: endProduct }}
