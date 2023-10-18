@@ -22,7 +22,11 @@ function PdfEditor() {
     setCombinedPdfUrl, 
     packageType,
     numberOfPackages,
-    shippingMethod} =
+    shippingMethod,
+    hardwareDescription,
+    packageCondition  
+  
+  } =
     useContext(AppContext);
 
     async function copyFirstPageToSecondPage(labelPdf, checklistPdf) {      
@@ -41,7 +45,7 @@ function PdfEditor() {
   useEffect(() => {
     async function modifyPdf() {
       try {
-        const checklistUrl = "https://pepelopezcode.github.io/pdfs/qpc%20receiving%20checklist.pdf";
+        const checklistUrl = "https://pepelopezcode.github.io/pdfs/Revised%20receiving%20checklist.pdf";
         const bigLabelUrl = "https://pepelopezcode.github.io/pdfs/BIG%20LABEL.docx.pdf";
         const expediteBigLabel = "https://pepelopezcode.github.io/pdfs/EXPEDITE%20%20BIG%20LABEL.docx.pdf";
         const calibriFontUrl = "https://pepelopezcode.github.io/pdfs/calibrib.ttf"
@@ -78,40 +82,47 @@ function PdfEditor() {
         const checklistPages = checklistPdfDoc.getPages();
         const checklistFirstPage = checklistPages[0];
         
-        inputText(98, 622, companyName, checklistFirstPage, checklistCalibriFont, 15);
-        inputText(450, 622, purchaseOrder, checklistFirstPage, checklistCalibriFont, 15);
-        inputText(150, 597, date, checklistFirstPage, checklistCalibriFont, 15);
-        inputText(387, 597, time, checklistFirstPage, checklistCalibriFont, 15);
-        inputText(170, 525, "GOOD", checklistFirstPage, checklistCalibriFont, 15);
-        inputText(370, 375, currDate, checklistFirstPage, checklistCalibriFont, 15);
-        inputText(490, 375, currTime, checklistFirstPage, checklistCalibriFont, 15);
-        inputText(174, 323, workOrder, checklistFirstPage, checklistCalibriFont, 15);
-        inputText(370, 115, currDate, checklistFirstPage, checklistCalibriFont, 15);
-        inputText(490, 115, currTime, checklistFirstPage, checklistCalibriFont, 15);
-        inputText(425, 550, numberOfPackages, checklistFirstPage, checklistCalibriFont, 15)
-        inputText(120, 573, shippingMethod, checklistFirstPage,checklistCalibriFont, 15)
+        inputText(98, 615, companyName, checklistFirstPage, checklistCalibriFont, 15);
+        inputText(453, 615, purchaseOrder, checklistFirstPage, checklistCalibriFont, 15);
+        inputText(160, 570, date, checklistFirstPage, checklistCalibriFont, 15);
+        inputText(435, 570, time, checklistFirstPage, checklistCalibriFont, 15);
+        inputText(180, 500, packageCondition, checklistFirstPage, checklistCalibriFont, 15);
+        inputText(372, 85, currDate, checklistFirstPage, checklistCalibriFont, 15);
+        inputText(492, 85, currTime, checklistFirstPage, checklistCalibriFont, 15);
+        inputText(187, 423, hardwareDescription, checklistFirstPage, checklistCalibriFont, 15);
+        inputText(372, 115, currDate, checklistFirstPage, checklistCalibriFont, 15);
+        inputText(492, 115, currTime, checklistFirstPage, checklistCalibriFont, 15);
+        inputText(530, 524, numberOfPackages, checklistFirstPage, checklistCalibriFont, 15)
+        inputText(125, 545, shippingMethod, checklistFirstPage,checklistCalibriFont, 15)
 
 
         const circlePackageType = (type) => {
           let xAxis = 0
           let yAxis = 0
+          let xScaleSize = 0
           if (type === 'Box'){
-            xAxis = 162;
-            yAxis = 555;
+            xAxis = 170;
+            yAxis = 527;
           }else if (type === 'Pallet'){
-            xAxis = 200;
-            yAxis = 555;
+            xAxis = 215;
+            yAxis = 527;
           }else if (type === 'Crate'){
-            xAxis = 240;
-            yAxis = 555;
+            xAxis = 258;
+            yAxis = 527;
+          }else if (type === 'Loose'){
+            xAxis = 302;
+            yAxis = 527;
           }else {
-            xAxis = 278;
-            yAxis = 555;
+            xAxis = 355;
+            yAxis = 527;
           }
+
+          xAxis === 355 ? xScaleSize = 24 : xScaleSize = 18
+
           checklistFirstPage.drawEllipse({
             x: xAxis,
             y: yAxis,
-            xScale: 16,
+            xScale: xScaleSize,
             yScale: 11,
             borderWidth: 2,
             borderColor: rgb(0, 0, 0),

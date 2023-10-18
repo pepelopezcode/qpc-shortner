@@ -21,6 +21,8 @@ function App() {
   const [packageType, setPackageType] = useState('Box')
   const [numberOfPackages, setNumberOfPackages] = useState('')
   const [shippingMethod, setShippingMethod] = useState('DRIVER')
+  const [packageCondition, setPackageCondition] = useState('GOOD')
+  const [hardwareDescription, setHardwareDescription] = useState('')
 
 
   const handlePrint = () => {
@@ -67,7 +69,11 @@ function App() {
           numberOfPackages, 
           setNumberOfPackages,
           shippingMethod, 
-          setShippingMethod
+          setShippingMethod,
+          packageCondition, 
+          setPackageCondition,
+          hardwareDescription, 
+          setHardwareDescription
         }}
       >
         <Form />

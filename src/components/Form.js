@@ -24,14 +24,17 @@ function Form() {
     setQty,
     qty,
     setIsExpedite,
-    isExpedite,
     handlePrint,
     setPackageType,
     packageType,
     numberOfPackages,
     setNumberOfPackages,
     shippingMethod, 
-    setShippingMethod
+    setShippingMethod,
+    packageCondition, 
+    setPackageCondition,
+    hardwareDescription, 
+    setHardwareDescription
   } = useContext(AppContext);
 
   const formatDateTime = () => {
@@ -72,6 +75,9 @@ function Form() {
             break;
           case 3:
             setPurchaseOrder(tempWord);
+            break;
+          case 4:
+            tempWord === 'yes' || tempWord === 'YES' ? setIsExpedite(true) : setIsExpedite(false)
             break;
           case 7:
             setDate(tempWord);
@@ -115,7 +121,7 @@ function Form() {
           </div>
           <div className="mb-4 caret-transparent">
             <input
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 caret-black"
               type="text"
               id="qty"
               value={qty}
@@ -123,19 +129,6 @@ function Form() {
               placeholder="Enter quantity on PO"
               required
             />
-          </div>
-          <div className="mb-4 caret-transparent">
-            <input
-              type="checkbox"
-              id="expedite"
-              value="Expedite"
-              name="Expedite"
-              onChange={() => {
-                setIsExpedite(!isExpedite);
-              }}
-              className="form-checkbox custom-checkbox border rounded text-blue-500 focus:outline-none focus:border-blue-500"
-            />
-            <label htmlFor="expedite" className="ml-2 text-gray-700">Expedite</label>
           </div>
           <div className="mb-4 caret-transparent">
             <label htmlFor="selectShipping">Shipping Method</label>
@@ -164,9 +157,10 @@ function Form() {
               <option value="Pallet">Pallet</option>
               <option value="Crate">Crate</option>
               <option value="Loose">Loose</option>
+              <option value="Container">Container</option>
             </select>
           </div>
-          <div className="mb-4  caret-transparent">
+          <div className="mb-4 ">
             <input
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
               type="text"
@@ -174,6 +168,28 @@ function Form() {
               value={numberOfPackages}
               onChange={(e) => setNumberOfPackages(e.target.value)}
               placeholder="Enter number of packages"
+              required
+            />
+          </div>
+          <div className="mb-4 ">
+            <input
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+              type="text"
+              id="package-condition"
+              value={packageCondition}
+              onChange={(e) => setPackageCondition(e.target.value)}
+              placeholder="Package condition..."
+              required
+            />
+          </div>
+          <div className="mb-4 ">
+            <input
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+              type="text"
+              id="hardware-description"
+              value={hardwareDescription}
+              onChange={(e) => setHardwareDescription(e.target.value)}
+              placeholder="Hardware description..."
               required
             />
           </div>
