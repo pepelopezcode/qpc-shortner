@@ -15,8 +15,6 @@ function Form() {
     setPurchaseOrder,
     time,
     setTime,
-    done,
-    setDone,
     endProduct,
     setEndProduct,
     setCurrTime,
@@ -34,7 +32,7 @@ function Form() {
     packageCondition, 
     setPackageCondition,
     hardwareDescription, 
-    setHardwareDescription
+    setHardwareDescription,
   } = useContext(AppContext);
 
   const formatDateTime = () => {
@@ -58,9 +56,10 @@ function Form() {
     setCurrTime(formattedTime);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    let tempWord = "";
+
+
+  useEffect(() => {
+ let tempWord = "";
     let tempCounter = 0;
     for (let i = 0; i < initialInfo.length; i++) {
       if (initialInfo[i] !== "\t") {
@@ -93,21 +92,22 @@ function Form() {
       }
     }
     formatDateTime();
-    setDone(!done);
-  };
+  },[initialInfo])
+
 
   useEffect(() => {
     setEndProduct(
       `ARRIVED @ ${date} ${time}<br>${companyName}<br>PO:${purchaseOrder}<br>WO:${workOrder}`
     );
-  }, [done]);
+  }, [companyName, date, purchaseOrder, setEndProduct, time, workOrder]);
+
+ 
   
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
       <div className="bg-white p-8 rounded shadow-md w-96">
         <h2 className="text-2xl font-semibold mb-4 caret-transparent">My Form</h2>
-        <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <input
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
@@ -193,24 +193,15 @@ function Form() {
               required
             />
           </div>
-          <div className="mb-4 caret-transparent">
-            <button
-              className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 caret-transparent"
-              type="submit"
-            >
-              Submit
-            </button>
-          </div>
-        </form>
-        <button
+          <button
           className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 caret-transparent"
           type="button"
           onClick={() => {
-            handlePrint();
+           handlePrint();
           }}
         >
           Print
-        </button>
+        </button>        
         <div className="mt-4 select-all">
           <p
             className="whitespace-pre-line caret-transparent"

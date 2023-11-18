@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useContext } from "react";
 import { PDFDocument, rgb } from "pdf-lib";
 import { AppContext } from "./App";
 import fontkit from '@pdf-lib/fontkit'
@@ -7,14 +7,12 @@ import fontkit from '@pdf-lib/fontkit'
 
 function PdfEditor() {
 
-  const [error, setError] = useState(null);
   const { 
     workOrder, 
     companyName, 
     purchaseOrder, 
     date, 
     time, 
-    done, 
     currTime, 
     currDate, 
     isExpedite, 
@@ -44,7 +42,6 @@ function PdfEditor() {
 
   useEffect(() => {
     async function modifyPdf() {
-      try {
         const checklistUrl = "https://pepelopezcode.github.io/pdfs/Revised%20receiving%20checklist.pdf";
         const bigLabelUrl = "https://pepelopezcode.github.io/pdfs/BIG%20LABEL.docx.pdf";
         const expediteBigLabel = "https://pepelopezcode.github.io/pdfs/EXPEDITE%20%20BIG%20LABEL.docx.pdf";
@@ -94,6 +91,7 @@ function PdfEditor() {
         inputText(492, 115, currTime, checklistFirstPage, checklistCalibriFont, 15);
         inputText(530, 524, numberOfPackages, checklistFirstPage, checklistCalibriFont, 15)
         inputText(125, 545, shippingMethod, checklistFirstPage,checklistCalibriFont, 15)
+        
 
 
         const circlePackageType = (type) => {
@@ -170,25 +168,15 @@ function PdfEditor() {
         const modifiedCombinedPdfDataUrl = URL.createObjectURL(modifiedCombinedPdfBlob);
 
         setCombinedPdfUrl(modifiedCombinedPdfDataUrl);
-      } catch (err) {
-        setError(err.message || "An error occurred while modifying the PDF.");
-      }
+      
     }
-
+    console.log(1)
     modifyPdf();
-  }, [done]);
+  }, [companyName, currDate, currTime, date, hardwareDescription, isExpedite, numberOfPackages, packageCondition, packageType, purchaseOrder, qty, setCombinedPdfUrl, shippingMethod, time, workOrder]);
 
  
 
-  return (
-    <div>
-      {error ? (
-        <p>Error: {error}</p>
-      )  : (
-        <p>Loading...</p>
-      )}
-    </div>
-  );
+  
 }
 
 export default PdfEditor;
