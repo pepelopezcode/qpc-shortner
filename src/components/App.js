@@ -11,6 +11,7 @@ function App() {
   const [purchaseOrder, setPurchaseOrder] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
+  const [done, setDone] = useState(false);
   const [endProduct, setEndProduct] = useState("");
   const [currTime, setCurrTime] = useState("");
   const [currDate, setCurrDate] = useState("");
@@ -22,14 +23,15 @@ function App() {
   const [shippingMethod, setShippingMethod] = useState('DRIVER')
   const [packageCondition, setPackageCondition] = useState('GOOD')
   const [hardwareDescription, setHardwareDescription] = useState('')
-  
 
 
   const handlePrint = () => {
+    if (combinedPdfUrl) {
       const printWindow = window.open(combinedPdfUrl);
-      
-      printWindow.onload = () => { printWindow.print(); };
-    
+      printWindow.onload = () => {
+        printWindow.print();
+      };
+    }
   };
 
   return (
@@ -48,6 +50,8 @@ function App() {
           setPurchaseOrder,
           time,
           setTime,
+          done,
+          setDone,
           endProduct,
           setEndProduct,
           setCurrDate,
@@ -69,7 +73,7 @@ function App() {
           packageCondition, 
           setPackageCondition,
           hardwareDescription, 
-          setHardwareDescription,
+          setHardwareDescription
         }}
       >
         <Form />
