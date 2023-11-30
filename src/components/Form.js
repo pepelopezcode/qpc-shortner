@@ -37,6 +37,20 @@ function Form() {
     setHardwareDescription
   } = useContext(AppContext);
 
+  const splitString = (input) => {
+    const characterLimit = 21
+    if (input.length <= characterLimit) {
+      return [input, ''];
+    }
+  
+    const lastSpaceIndex = input.lastIndexOf(' ', characterLimit);
+  
+    const firstPart = input.slice(0, lastSpaceIndex);
+    const secondPart = input.slice(lastSpaceIndex + 1);
+  
+    return [firstPart, secondPart];
+  }
+
   const formatDateTime = () => {
     const dateTime = new Date();
 
@@ -71,7 +85,7 @@ function Form() {
             setWorkOrder(tempWord);
             break;
           case 2:
-            setCompanyName(tempWord);
+            tempWord.length > 21 ? setCompanyName(splitString(tempWord)) : setCompanyName(tempWord)
             break;
           case 3:
             setPurchaseOrder(tempWord);
@@ -97,8 +111,9 @@ function Form() {
   };
 
   useEffect(() => {
+    const tempCommpanyName = Array.isArray(companyName) ? companyName.join(' ') : companyName
     setEndProduct(
-      `ARRIVED @ ${date} ${time}<br>${companyName}<br>PO:${purchaseOrder}<br>WO:${workOrder}`
+      `ARRIVED @ ${date} ${time}<br>${tempCommpanyName}<br>PO:${purchaseOrder}<br>WO:${workOrder}`
     );
   }, [done]);
   
@@ -202,8 +217,13 @@ function Form() {
             </button>
           </div>
         </form>
+        <div className="mt-4 select-all">
+          <p
+            className="whitespace-pre-line caret-transparent"
+            dangerouslySetInnerHTML={{ __html: endProduct }}
+          ></p>
         <button
-          className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 caret-transparent"
+          className="w-full bg-blue-500 text-white py-2 my-2 rounded-md hover:bg-blue-600 caret-transparent"
           type="button"
           onClick={() => {
             handlePrint();
@@ -211,11 +231,6 @@ function Form() {
         >
           Print
         </button>
-        <div className="mt-4 select-all">
-          <p
-            className="whitespace-pre-line caret-transparent"
-            dangerouslySetInnerHTML={{ __html: endProduct }}
-          ></p>
         </div>
       </div>
     </div>

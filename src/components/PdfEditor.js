@@ -26,21 +26,21 @@ function PdfEditor() {
     hardwareDescription,
     packageCondition  
   
-  } =
-    useContext(AppContext);
+  } = useContext(AppContext);
 
-    async function copyFirstPageToSecondPage(labelPdf, checklistPdf) {      
-      const modifiedChecklist = await PDFDocument.load(checklistPdf);
-      const modifiedBIgLabe = await PDFDocument.load(labelPdf);
+  async function copyFirstPageToSecondPage(labelPdf, checklistPdf) {      
+    const modifiedChecklist = await PDFDocument.load(checklistPdf);
+    const modifiedBIgLabe = await PDFDocument.load(labelPdf);
      
-      const [firstPage] = await modifiedChecklist.copyPages(modifiedBIgLabe, [0]);
+    const [firstPage] = await modifiedChecklist.copyPages(modifiedBIgLabe, [0]);
 
-      modifiedChecklist.addPage(firstPage);
+    modifiedChecklist.addPage(firstPage);
 
-      const copiedPdf = await modifiedChecklist.save();
+    const copiedPdf = await modifiedChecklist.save();
 
-      return copiedPdf;
-    }
+
+    return copiedPdf;
+  }
 
   useEffect(() => {
     async function modifyPdf() {
@@ -70,7 +70,8 @@ function PdfEditor() {
         const expediteBigLabelCalibriFont = await expediteBigLabelPdfDoc.embedFont(fontResponse)
         
         const inputText = (xAxis, yAxis, text, pdf, font, fontSize) => {
-          pdf.drawText(`${text}`, {
+          const tempText = Array.isArray(text) ? text.join(' ') : text
+          pdf.drawText(`${tempText}`, {
             x: xAxis,
             y: yAxis,
             size: fontSize,
@@ -81,6 +82,8 @@ function PdfEditor() {
         
         const checklistPages = checklistPdfDoc.getPages();
         const checklistFirstPage = checklistPages[0];
+
+
         
         inputText(98, 615, companyName, checklistFirstPage, checklistCalibriFont, 15);
         inputText(453, 615, purchaseOrder, checklistFirstPage, checklistCalibriFont, 15);
@@ -147,7 +150,13 @@ function PdfEditor() {
 
         const purchaseOrderFontSize = purchaseOrder.length > 8 ? 20 : 24
 
-        inputText(200, 724.5, companyName, bigLabelFirstPage, bigLabelCalibriFont, 32);
+        if ( Array.isArray(companyName) ){
+          inputText(200, 724.5, companyName[0], bigLabelFirstPage, bigLabelCalibriFont, 32)
+          inputText(45, 685, companyName[1], bigLabelFirstPage, bigLabelCalibriFont, 32)
+        }else{
+          inputText(200, 724.5, companyName, bigLabelFirstPage, bigLabelCalibriFont, 32);
+        }
+
         inputText(72, 652, purchaseOrder, bigLabelFirstPage, bigLabelCalibriFont,purchaseOrderFontSize);
         inputText(285, 652, qty, bigLabelFirstPage, bigLabelCalibriFont, 28);
         inputText(145, 515, workOrder, bigLabelFirstPage, bigLabelCalibriFont, 125);
@@ -157,7 +166,13 @@ function PdfEditor() {
         const expediteBigLabelPages = expediteBigLabelPdfDoc.getPages();
         const expediteBigLabelFirstPage = expediteBigLabelPages[0]
 
-        inputText(200, 724.5, companyName, expediteBigLabelFirstPage, expediteBigLabelCalibriFont, 32);
+        if ( Array.isArray(companyName) ){
+          inputText(200, 724.5, companyName[0], expediteBigLabelFirstPage, bigLabelCalibriFont, 32)
+          inputText(45, 685, companyName[1], expediteBigLabelFirstPage, bigLabelCalibriFont, 32)
+        }else{
+          inputText(200, 724.5, companyName, expediteBigLabelFirstPage, bigLabelCalibriFont, 32);
+        }
+
         inputText(72, 652, purchaseOrder, expediteBigLabelFirstPage, expediteBigLabelCalibriFont,purchaseOrderFontSize);
         inputText(285, 652, qty, expediteBigLabelFirstPage, expediteBigLabelCalibriFont, 28);
         inputText(145, 515, workOrder, expediteBigLabelFirstPage, expediteBigLabelCalibriFont, 125);
@@ -183,8 +198,7 @@ function PdfEditor() {
     modifyPdf();
   }, [done]);
 
-  console.log(purchaseOrder.length)
-
+  
   return (
     <div>
       {error ? (
