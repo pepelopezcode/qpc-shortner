@@ -201,11 +201,7 @@ function PdfEditor() {
   
   return (
     <div>
-      {error ? (
-        <p>Error: {error}</p>
-      )  : (
-        <p>Loading...</p>
-      )}
+     
     </div>
   );
 }
