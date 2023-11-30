@@ -15,6 +15,8 @@ function Form() {
     setPurchaseOrder,
     time,
     setTime,
+    done,
+    setDone,
     endProduct,
     setEndProduct,
     setCurrTime,
@@ -32,7 +34,7 @@ function Form() {
     packageCondition, 
     setPackageCondition,
     hardwareDescription, 
-    setHardwareDescription,
+    setHardwareDescription
   } = useContext(AppContext);
 
   const splitString = (input) => {
@@ -70,10 +72,9 @@ function Form() {
     setCurrTime(formattedTime);
   };
 
-
-
-  useEffect(() => {
- let tempWord = "";
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    let tempWord = "";
     let tempCounter = 0;
     for (let i = 0; i < initialInfo.length; i++) {
       if (initialInfo[i] !== "\t") {
@@ -106,24 +107,22 @@ function Form() {
       }
     }
     formatDateTime();
-    // eslint-disable-next-line
-  },[initialInfo])
-
+    setDone(!done);
+  };
 
   useEffect(() => {
     const tempCommpanyName = Array.isArray(companyName) ? companyName.join(' ') : companyName
     setEndProduct(
       `ARRIVED @ ${date} ${time}<br>${tempCommpanyName}<br>PO:${purchaseOrder}<br>WO:${workOrder}`
     );
-  }, [companyName, date, purchaseOrder, setEndProduct, time, workOrder]);
-
- 
+  }, [done]);
   
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
       <div className="bg-white p-8 rounded shadow-md w-96">
         <h2 className="text-2xl font-semibold mb-4 caret-transparent">My Form</h2>
+        <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <input
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
@@ -218,20 +217,20 @@ function Form() {
             </button>
           </div>
         </form>
-        <button
-          className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 caret-transparent"
-          type="button"
-          onClick={() => {
-           handlePrint();
-          }}
-        >
-          Print
-        </button>
         <div className="mt-4 select-all">
           <p
             className="whitespace-pre-line caret-transparent"
             dangerouslySetInnerHTML={{ __html: endProduct }}
           ></p>
+        <button
+          className="w-full bg-blue-500 text-white py-2 my-2 rounded-md hover:bg-blue-600 caret-transparent"
+          type="button"
+          onClick={() => {
+            handlePrint();
+          }}
+        >
+          Print
+        </button>
         </div>
       </div>
     </div>
