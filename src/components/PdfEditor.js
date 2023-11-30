@@ -1,4 +1,4 @@
-import { useEffect, useContext } from "react";
+import { useEffect, useContext,  useState } from "react";
 import { PDFDocument, rgb } from "pdf-lib";
 import { AppContext } from "./App";
 import fontkit from '@pdf-lib/fontkit'
@@ -22,12 +22,62 @@ function PdfEditor() {
     numberOfPackages,
     shippingMethod,
     hardwareDescription,
-    packageCondition  
+    packageCondition,
+    combinedPdfUrl 
   
-  } =
-    useContext(AppContext);
+   } = useContext(AppContext);
 
-    async function copyFirstPageToSecondPage(labelPdf, checklistPdf) {      
+  const [checklistPdfDoc, setChecklistPdfDoc] = useState(null);
+  const [bigLabelPdfDoc, setBigLabelPdfDoc] = useState(null);
+  const [expediteBigLabelPdfDoc, setExpediteBigLabelPdfDoc] = useState(null);
+  const [calibriFont, setCalibriFont] = useState(null);
+ 
+ 
+
+  const checklistUrl = "https://pepelopezcode.github.io/pdfs/Revised%20receiving%20checklist.pdf";
+  const bigLabelUrl = "https://pepelopezcode.github.io/pdfs/BIG%20LABEL.docx.pdf";
+  const expediteBigLabel = "https://pepelopezcode.github.io/pdfs/EXPEDITE%20%20BIG%20LABEL.docx.pdf";
+  const calibriFontUrl = "https://pepelopezcode.github.io/pdfs/calibrib.ttf"
+
+
+  useEffect(() => {
+    async function fetchPdfAndFont () {
+      async function fetchPdf (url) {
+        const response = await fetch(url);
+        const pdfBytes = await response.arrayBuffer();
+        return PDFDocument.load(pdfBytes);
+      };
+
+      const checklistPdf = await fetchPdf(checklistUrl);
+      const bigLabelPdf = await fetchPdf(bigLabelUrl);
+      const expediteBigLabelPdf = await fetchPdf(expediteBigLabel);
+
+      checklistPdf.registerFontkit(fontkit);
+      bigLabelPdf.registerFontkit(fontkit);
+      expediteBigLabelPdf.registerFontkit(fontkit);
+
+      const fontResponse = await fetch(calibriFontUrl);
+      const fontBytes = await fontResponse.arrayBuffer();
+
+      const checklistCalibriFont = await checklistPdf.embedFont(fontBytes);
+      const bigLabelCalibriFont = await bigLabelPdf.embedFont(fontBytes);
+      const expediteBigLabelCalibriFont = await expediteBigLabelPdf.embedFont(fontBytes);
+
+      setChecklistPdfDoc(checklistPdf);
+      setBigLabelPdfDoc(bigLabelPdf);
+      setExpediteBigLabelPdfDoc(expediteBigLabelPdf);
+      setCalibriFont({
+        checklist: checklistCalibriFont,
+        bigLabel: bigLabelCalibriFont,
+        expediteBigLabel: expediteBigLabelCalibriFont,
+      });
+    };
+
+    fetchPdfAndFont();
+  }, []);
+
+
+  async function copyFirstPageToSecondPage(labelPdf, checklistPdf) {      
       const modifiedChecklist = await PDFDocument.load(checklistPdf);
       const modifiedBIgLabe = await PDFDocument.load(labelPdf);
      
@@ -39,32 +89,40 @@ function PdfEditor() {
 
       return copiedPdf;
     }
+    
+ 
 
-  useEffect(() => {
-    async function modifyPdf() {
-        const checklistUrl = "https://pepelopezcode.github.io/pdfs/Revised%20receiving%20checklist.pdf";
-        const bigLabelUrl = "https://pepelopezcode.github.io/pdfs/BIG%20LABEL.docx.pdf";
-        const expediteBigLabel = "https://pepelopezcode.github.io/pdfs/EXPEDITE%20%20BIG%20LABEL.docx.pdf";
-        const calibriFontUrl = "https://pepelopezcode.github.io/pdfs/calibrib.ttf"
-
-        const existingChecklistPdfBytes = await fetch(checklistUrl).then((res) => res.arrayBuffer());
-        const existingBigLabePdfBytes = await fetch(bigLabelUrl).then((res) => res.arrayBuffer());
-        const existingExpediteBigLabelPdfBytes = await fetch(expediteBigLabel).then((res) => res.arrayBuffer());
-
-        const checklistPdfDoc = await PDFDocument.load(existingChecklistPdfBytes);
-        const bigLabelPdfDoc = await PDFDocument.load(existingBigLabePdfBytes);
-        const expediteBigLabelPdfDoc = await PDFDocument.load(existingExpediteBigLabelPdfBytes);
+  
 
 
-        checklistPdfDoc.registerFontkit(fontkit)
-        bigLabelPdfDoc.registerFontkit(fontkit)
-        expediteBigLabelPdfDoc.registerFontkit(fontkit)
+  async function modifyPdf() {
+    
+        if (!checklistPdfDoc || !bigLabelPdfDoc || !expediteBigLabelPdfDoc || !calibriFont) {
+          console.log('not loaded')
+          return;
+    }
+    
+    
+   
+        // const existingChecklistPdfBytes = await fetch(checklistUrl).then((res) => res.arrayBuffer());
+        // const existingBigLabePdfBytes = await fetch(bigLabelUrl).then((res) => res.arrayBuffer());
+        // const existingExpediteBigLabelPdfBytes = await fetch(expediteBigLabel).then((res) => res.arrayBuffer());
 
-        const fontResponse = await fetch(calibriFontUrl).then((res) => res.arrayBuffer())
+        // const checklistPdfDoc = await PDFDocument.load(existingChecklistPdfBytes);
+        // const bigLabelPdfDoc = await PDFDocument.load(existingBigLabePdfBytes);
+        // const expediteBigLabelPdfDoc = await PDFDocument.load(existingExpediteBigLabelPdfBytes);
 
-        const checklistCalibriFont = await checklistPdfDoc.embedFont(fontResponse)
-        const bigLabelCalibriFont = await bigLabelPdfDoc.embedFont(fontResponse)
-        const expediteBigLabelCalibriFont = await expediteBigLabelPdfDoc.embedFont(fontResponse)
+        const { checklist, bigLabel, expediteBigLabel } = calibriFont;
+
+        // checklistPdfDoc.registerFontkit(fontkit)
+        // bigLabelPdfDoc.registerFontkit(fontkit)
+        // expediteBigLabelPdfDoc.registerFontkit(fontkit)
+
+        // const fontResponse = await fetch(calibriFontUrl).then((res) => res.arrayBuffer())
+
+        // const checklistCalibriFont = await checklistPdfDoc.embedFont(fontResponse)
+        // const bigLabel = await bigLabelPdfDoc.embedFont(fontResponse)
+        // const expediteBigLabel = await expediteBigLabelPdfDoc.embedFont(fontResponse)
         
         const inputText = (xAxis, yAxis, text, pdf, font, fontSize) => {
           pdf.drawText(`${text}`, {
@@ -79,18 +137,18 @@ function PdfEditor() {
         const checklistPages = checklistPdfDoc.getPages();
         const checklistFirstPage = checklistPages[0];
         
-        inputText(98, 615, companyName, checklistFirstPage, checklistCalibriFont, 15);
-        inputText(453, 615, purchaseOrder, checklistFirstPage, checklistCalibriFont, 15);
-        inputText(160, 570, date, checklistFirstPage, checklistCalibriFont, 15);
-        inputText(435, 570, time, checklistFirstPage, checklistCalibriFont, 15);
-        inputText(180, 500, packageCondition, checklistFirstPage, checklistCalibriFont, 15);
-        inputText(372, 85, currDate, checklistFirstPage, checklistCalibriFont, 15);
-        inputText(492, 85, currTime, checklistFirstPage, checklistCalibriFont, 15);
-        inputText(187, 423, hardwareDescription, checklistFirstPage, checklistCalibriFont, 15);
-        inputText(372, 115, currDate, checklistFirstPage, checklistCalibriFont, 15);
-        inputText(492, 115, currTime, checklistFirstPage, checklistCalibriFont, 15);
-        inputText(530, 524, numberOfPackages, checklistFirstPage, checklistCalibriFont, 15)
-        inputText(125, 545, shippingMethod, checklistFirstPage,checklistCalibriFont, 15)
+        inputText(98, 615, companyName, checklistFirstPage, checklist, 15);
+        inputText(453, 615, purchaseOrder, checklistFirstPage, checklist, 15);
+        inputText(160, 570, date, checklistFirstPage, checklist, 15);
+        inputText(435, 570, time, checklistFirstPage, checklist, 15);
+        inputText(180, 500, packageCondition, checklistFirstPage, checklist, 15);
+        inputText(372, 85, currDate, checklistFirstPage, checklist, 15);
+        inputText(492, 85, currTime, checklistFirstPage, checklist, 15);
+        inputText(187, 423, hardwareDescription, checklistFirstPage, checklist, 15);
+        inputText(372, 115, currDate, checklistFirstPage, checklist, 15);
+        inputText(492, 115, currTime, checklistFirstPage, checklist, 15);
+        inputText(530, 524, numberOfPackages, checklistFirstPage, checklist, 15)
+        inputText(125, 545, shippingMethod, checklistFirstPage,checklist, 15)
         
 
 
@@ -140,39 +198,44 @@ function PdfEditor() {
         const bigLabelPages = bigLabelPdfDoc.getPages();
         const bigLabelFirstPage = bigLabelPages[0]
 
-        inputText(200, 724.5, companyName, bigLabelFirstPage, bigLabelCalibriFont, 32);
-        inputText(85, 652, purchaseOrder, bigLabelFirstPage, bigLabelCalibriFont,28);
-        inputText(285, 652, qty, bigLabelFirstPage, bigLabelCalibriFont, 28);
-        inputText(145, 515, workOrder, bigLabelFirstPage, bigLabelCalibriFont, 125);
+        inputText(200, 724.5, companyName, bigLabelFirstPage, bigLabel, 32);
+        inputText(85, 652, purchaseOrder, bigLabelFirstPage, bigLabel,28);
+        inputText(285, 652, qty, bigLabelFirstPage, bigLabel, 28);
+        inputText(145, 515, workOrder, bigLabelFirstPage, bigLabel, 125);
 
         const modifiedBigLabelBytes = await bigLabelPdfDoc.save()
 
         const expediteBigLabelPages = expediteBigLabelPdfDoc.getPages();
         const expediteBigLabelFirstPage = expediteBigLabelPages[0]
 
-        inputText(200, 724.5, companyName, expediteBigLabelFirstPage, expediteBigLabelCalibriFont, 32);
-        inputText(85, 652, purchaseOrder, expediteBigLabelFirstPage, expediteBigLabelCalibriFont,28);
-        inputText(285, 652, qty, expediteBigLabelFirstPage, expediteBigLabelCalibriFont, 28);
-        inputText(145, 515, workOrder, expediteBigLabelFirstPage, expediteBigLabelCalibriFont, 125);
+        inputText(200, 724.5, companyName, expediteBigLabelFirstPage, expediteBigLabel, 32);
+        inputText(85, 652, purchaseOrder, expediteBigLabelFirstPage, expediteBigLabel,28);
+        inputText(285, 652, qty, expediteBigLabelFirstPage, expediteBigLabel, 28);
+        inputText(145, 515, workOrder, expediteBigLabelFirstPage, expediteBigLabel, 125);
 
         const modifiedExpediteBigLabelBytes = await expediteBigLabelPdfDoc.save()
 
         const chosenBigLabel = isExpedite ?  modifiedExpediteBigLabelBytes : modifiedBigLabelBytes ;
 
         const combinedPdfs = await copyFirstPageToSecondPage(chosenBigLabel, modifiedChecklistPdfBytes)
-
+          console.log(combinedPdfs)
         const modifiedCombinedPdfBlob = new Blob([combinedPdfs], {
           type: "application/pdf",
         });
 
-        const modifiedCombinedPdfDataUrl = URL.createObjectURL(modifiedCombinedPdfBlob);
 
-        setCombinedPdfUrl(modifiedCombinedPdfDataUrl);
+        console.log(modifiedCombinedPdfBlob)
+        const modifiedCombinedPdfDataUrl = URL.createObjectURL(modifiedCombinedPdfBlob);
+        
+
+        setCombinedPdfUrl( modifiedCombinedPdfDataUrl);
       
     }
-    console.log(1)
+console.log(combinedPdfUrl)
+  useEffect(() => {
+    
     modifyPdf();
-  }, [companyName, currDate, currTime, date, hardwareDescription, isExpedite, numberOfPackages, packageCondition, packageType, purchaseOrder, qty, setCombinedPdfUrl, shippingMethod, time, workOrder]);
+  }, [companyName, currDate, currTime, date, hardwareDescription, isExpedite, numberOfPackages, packageCondition, packageType, purchaseOrder, qty, shippingMethod, time, workOrder]);
 
  
 

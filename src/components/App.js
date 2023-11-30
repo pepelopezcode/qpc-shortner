@@ -26,12 +26,10 @@ function App() {
 
 
   const handlePrint = () => {
-    if (combinedPdfUrl) {
-    
       const printWindow = window.open(combinedPdfUrl);
       
       printWindow.onload = () => { printWindow.print(); };
-    }
+    
   };
 
   return (
