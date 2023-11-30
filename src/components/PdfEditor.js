@@ -92,7 +92,7 @@ function PdfEditor() {
         inputText(187, 423, hardwareDescription, checklistFirstPage, checklistCalibriFont, 15);
         inputText(372, 115, currDate, checklistFirstPage, checklistCalibriFont, 15);
         inputText(492, 115, currTime, checklistFirstPage, checklistCalibriFont, 15);
-        inputText(530, 524, numberOfPackages, checklistFirstPage, checklistCalibriFont, 15)
+        inputText(525, 524, numberOfPackages, checklistFirstPage, checklistCalibriFont, 15)
         inputText(125, 545, shippingMethod, checklistFirstPage,checklistCalibriFont, 15)
 
 
@@ -142,8 +142,13 @@ function PdfEditor() {
         const bigLabelPages = bigLabelPdfDoc.getPages();
         const bigLabelFirstPage = bigLabelPages[0]
 
+
+       
+
+        const purchaseOrderFontSize = purchaseOrder.length > 8 ? 20 : 24
+
         inputText(200, 724.5, companyName, bigLabelFirstPage, bigLabelCalibriFont, 32);
-        inputText(85, 652, purchaseOrder, bigLabelFirstPage, bigLabelCalibriFont,28);
+        inputText(72, 652, purchaseOrder, bigLabelFirstPage, bigLabelCalibriFont,purchaseOrderFontSize);
         inputText(285, 652, qty, bigLabelFirstPage, bigLabelCalibriFont, 28);
         inputText(145, 515, workOrder, bigLabelFirstPage, bigLabelCalibriFont, 125);
 
@@ -153,7 +158,7 @@ function PdfEditor() {
         const expediteBigLabelFirstPage = expediteBigLabelPages[0]
 
         inputText(200, 724.5, companyName, expediteBigLabelFirstPage, expediteBigLabelCalibriFont, 32);
-        inputText(85, 652, purchaseOrder, expediteBigLabelFirstPage, expediteBigLabelCalibriFont,28);
+        inputText(72, 652, purchaseOrder, expediteBigLabelFirstPage, expediteBigLabelCalibriFont,purchaseOrderFontSize);
         inputText(285, 652, qty, expediteBigLabelFirstPage, expediteBigLabelCalibriFont, 28);
         inputText(145, 515, workOrder, expediteBigLabelFirstPage, expediteBigLabelCalibriFont, 125);
 
@@ -178,7 +183,7 @@ function PdfEditor() {
     modifyPdf();
   }, [done]);
 
- 
+  console.log(purchaseOrder.length)
 
   return (
     <div>
