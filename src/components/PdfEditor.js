@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useContext } from "react";
 import { PDFDocument, rgb } from "pdf-lib";
 import { AppContext } from "./App";
 import fontkit from '@pdf-lib/fontkit'
@@ -7,7 +7,7 @@ import fontkit from '@pdf-lib/fontkit'
 
 function PdfEditor() {
 
-  const [error, setError] = useState(null);
+  
   const { 
     workOrder, 
     companyName, 
@@ -191,7 +191,7 @@ function PdfEditor() {
 
         setCombinedPdfUrl(modifiedCombinedPdfDataUrl);
       } catch (err) {
-        setError(err.message || "An error occurred while modifying the PDF.");
+       console.log(err)
       }
     }
 
@@ -199,11 +199,7 @@ function PdfEditor() {
   }, [done]);
 
   
-  return (
-    <div>
-     
-    </div>
-  );
+  
 }
 
 export default PdfEditor;

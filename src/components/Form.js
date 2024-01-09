@@ -217,9 +217,9 @@ function Form() {
             </button>
           </div>
         </form>
-        <div className="mt-4 select-all">
+        <div className="mt-4 ">
           <p
-            className="whitespace-pre-line caret-transparent"
+            className="whitespace-pre-line caret-transparent select-all"
             dangerouslySetInnerHTML={{ __html: endProduct }}
           ></p>
         <button
